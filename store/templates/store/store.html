@@ -1,1 +1,31 @@
-<h1> Store</h1>
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<section class="py-5 bg-light text-center">
+    <div class="container">
+      <div class="row justify-content-center align-items-center py-5">
+        <div class="col-lg-7 col-md-9">
+          
+          <h1 class="display-4 fw-semibold mb-3">Welcome to <span class="text-primary">My Store App</span></h1>
+          
+          <p class="lead text-muted mb-4">
+            Discover the latest deals, stylish products, and a seamless shopping experience—all in one place.
+          </p>
+          
+          <div class="d-flex justify-content-center gap-3">
+            <a href="#" class="btn btn-primary btn-lg px-4 shadow-sm">Create an Account</a>
+            <a href="#" class="btn btn-outline-secondary btn-lg px-4">Learn More</a>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+
+{% endblock %}
+

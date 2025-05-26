@@ -16,7 +16,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     # Fields to display in the list view of the admin
-    list_display = ['name', 'slug', 'price', 'available', 'created', 'updated']
+    list_display = ['name', 'slug', 'price', 'available', 'created', 'updated','thumbnail']
 
     # Filters to be shown in the right sidebar for quick filtering
     list_filter = ['available', 'created', 'updated']
