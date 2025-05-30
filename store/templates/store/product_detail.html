@@ -1,0 +1,53 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+
+    <!-- Product Two-Column Layout -->
+    <div class="row align-items-center">
+
+        <!-- Left Column: Product Image -->
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="border rounded p-2 text-center" style="background-color: #f8f9fa;">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+                     style="width: 400px; height: 400px; object-fit: contain;">
+            </div>
+        </div>
+
+        <!-- Right Column: Product Info -->
+        <div class="col-md-6">
+            <h2 class="mb-3">{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <p><strong>Price:</strong> ${{ product.price }}</p>
+
+            <!-- Add to Cart Form -->
+            <form action="" method="post" class="mt-4">
+                {% csrf_token %}
+
+                <!-- Quantity Selector -->
+                <div class="mb-3">
+                    <label for="qty-select" class="form-label"><strong>Qty</strong></label>
+                    <select id="qty-select" name="quantity" class="form-select w-auto d-inline-block ms-2">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    <a href="{% url 'store_app:store' %}" class="btn btn-outline-secondary">Back to Store</a>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+

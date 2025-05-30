@@ -37,13 +37,13 @@
                 
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                    <li>
-                        
-                        <a class="dropdown-item" href="{% url 'store_app:store' %}"> All </a>
-                    
-                    </li>
+               
                 
-    
+                          {% for category in all_categories %}
+                          <li>
+                              <a class="dropdown-item" href=""> {{ category.name | capfirst}} </a>
+                          </li>
+                          {% endfor %}
                 
                 </ul>
 
