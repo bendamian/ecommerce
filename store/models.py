@@ -16,6 +16,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
+    def get_absolute_url(self):
+        return reverse('store_app:category_list', args=[ self.slug])
+    
 
 class Product(models.Model):
     category = models.ForeignKey(
