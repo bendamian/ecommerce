@@ -22,8 +22,8 @@
             <p><strong>Price:</strong> ${{ product.price }}</p>
 
             <!-- Add to Cart Form -->
-            <form action="" method="post" class="mt-4">
-                {% csrf_token %}
+           <!-- <form action="" method="post" class="mt-4">
+                {% csrf_token %}  -->
 
                 <!-- Quantity Selector -->
                 <div class="mb-3">
@@ -38,16 +38,52 @@
 
                 <!-- Buttons -->
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    <button id="add-to-cart"   type="button" class="btn btn-primary add-to-cart" data-product="{{ product.id }}">Add to Cart</button>
                     <a href="{% url 'store_app:store' %}" class="btn btn-outline-secondary">Back to Store</a>
                 </div>
-
-            </form>
+            <!--</form>-->
+            
         </div>
 
     </div>
 
 </div>
+
+
+
 {% endblock %}
 
+{% block scripts %}
+<script>
+ 
+    
+   $(document).on('click', '.add-to-cart', function(e) {
+  e.preventDefault();
 
+  const productId = $(this).data('product');   // ✅ safe
+  const quantity = $('#qty-select').val();     // ✅ safer than .text()
+
+  $.ajax({
+    type: 'POST',
+    url: '{% url "cart_app:cart_add" %}',
+    data: {
+      productid: productId,
+      quantity: quantity,
+      csrfmiddlewaretoken: '{{ csrf_token }}',
+      action: 'post'
+    },
+    success: function(json) {
+      console.log('Added to cart:', json);
+    },
+    error: function(xhr, errmsg, err) {
+      console.error("Error:", errmsg, xhr.responseText);
+    }
+  });
+});
+
+
+
+</script>
+
+
+{% endblock %}
