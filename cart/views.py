@@ -8,7 +8,9 @@ from .cart import Cart
 
 
 def cart_view(request):
-    return render(request, 'cart/cart_view.html')
+    cart=Cart(request)
+
+    return render(request, 'cart/cart_view.html',{'cart':cart})
 
 
 def cart_add(request):
@@ -32,12 +34,12 @@ def cart_add(request):
 
         product = get_object_or_404(Product, id=product_id)
         cart.add(product=product, quantity=product_quantity)
+        # Return total cart quantity (or whatever you need)
+        total_quantity = cart.__len__()
 
         response = JsonResponse({
-            "name": product.name,
-            # ensure Decimal is JSON serializable
-            "price": str(product.price),
-            "quantity": product_quantity
+            "quantity": total_quantity
+            
         })
         return response
 
