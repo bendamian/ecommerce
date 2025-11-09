@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from store.models import Category,Product
+from store.models import Category, Product
 from django.http import JsonResponse
 from .cart import Cart
 
@@ -8,9 +8,9 @@ from .cart import Cart
 
 
 def cart_view(request):
-    cart=Cart(request)
+    cart = Cart(request)
 
-    return render(request, 'cart/cart_view.html',{'cart':cart})
+    return render(request, 'cart/cart_view.html', {'cart': cart})
 
 
 def cart_add(request):
@@ -39,13 +39,38 @@ def cart_add(request):
 
         response = JsonResponse({
             "quantity": total_quantity
-            
+
         })
         return response
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
 def cart_remove(request):
-    pass
+    cart = Cart(request)
+    if request.method == "POST" and request.POST.get("action") == "post":
+        # 🔍 Debug: log what was received
+        print("POST data:", request.POST)
+        product_id = request.POST.get("productid")
+        cart.remove(product=product_id)
+
+        # Return total cart quantity (or whatever you need)
+        total_quantity = cart.__len__()
+
+        cart_total = cart.get_total_price()
+
+        response = JsonResponse({
+            "quantity": total_quantity,
+            "total": cart_total
+        })
+        return response
+
+        
+
+
+
+    
+
 
 def cart_update(request):
     pass

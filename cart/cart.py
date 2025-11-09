@@ -46,4 +46,9 @@ class Cart:
         """Return the total cost of all items in the cart."""
         return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
 
-   
+
+    def remove(self, product):
+        product_id = str(getattr(product, 'id', product))
+        if product_id in self.cart:
+            del self.cart[product_id]
+            self.session.modified = True
