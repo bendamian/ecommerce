@@ -66,11 +66,19 @@ def cart_remove(request):
         return response
 
         
-
-
-
-    
-
-
 def cart_update(request):
-    pass
+    if request.POST.get('action') == 'post':
+        product_id = int(request.POST.get('productid'))
+        quantity = int(request.POST.get('quantity'))
+
+        cart = Cart(request)
+        cart.update(product_id=product_id, quantity=quantity)
+
+        response = {
+            'quantity': cart.__len__(),
+            'total': cart.get_total_price()
+        }
+        return JsonResponse(response)
+
+    # ⭐ Prevent returning NONE here
+    return JsonResponse({'error': 'Invalid request'}, status=400)
