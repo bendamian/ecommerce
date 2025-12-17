@@ -1,3 +1,4 @@
+from copy import deepcopy
 from decimal import Decimal
 from store.models import Product  
 
@@ -51,7 +52,7 @@ class Cart:
         products = Product.objects.filter(id__in=product_ids)
 
         for product in products:
-            item = self.cart[str(product.id)].copy()
+            item = deepcopy(self.cart[str(product.id)])
             item['product'] = product
             item['price'] = Decimal(item['price'])
             item['total_price'] = item['price'] * item['quantity']

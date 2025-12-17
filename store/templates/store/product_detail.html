@@ -74,7 +74,7 @@
     },
     success: function(json) {
       console.log('Added to cart:', json);
-      //document.getElementById('cart-quantity').textContent = json.quantity;
+      document.getElementById('cart-quantity').textContent = json.quantity;
       
     },
     error: function(xhr, errmsg, err) {
