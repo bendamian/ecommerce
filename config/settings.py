@@ -29,12 +29,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+   
     # my apps
     'store',
     'cart', 
     'mathfilters',
     'account',
+    # 3rd party
+    'crispy_forms',
+    
+
 ]
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
