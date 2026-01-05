@@ -2,7 +2,10 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from .forms import UserRegisterForm
 from django.contrib import messages
-
+from django.contrib.sites.shortcuts import get_current_site
+from .token import user_token_generator
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
 # Create your views here.
 
 
@@ -23,3 +26,17 @@ def register(request):
     }   
 
     return render(request, 'account/registration/register.html', context=context)
+
+def email_verification(request):
+  pass
+
+def email_verification_sent(request):
+
+  pass
+
+
+def email_verification_success(request):
+   pass
+def email_verification_failed(request):
+
+  pass
