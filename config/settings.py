@@ -138,3 +138,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'   # Required for collectstatic
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#Email verification settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

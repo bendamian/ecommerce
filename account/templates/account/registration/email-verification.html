@@ -1,0 +1,7 @@
+ {% autoescape off %}
+hi {{ user.username }}, thank you for registering at {{ site_name }}.
+Please click the link below to verify your email address and complete your registration:
+
+http://{{ domain }}{% url 'account_app:email-verify' uidb64=uid token=token %}
+
+{% endautoescape %}
