@@ -1,3 +1,19 @@
-<h1> A verification link has been sent to your email</h1>
-<p>
-    Please check your email inbox and click on the verification link to complete your registration.
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<body class="bg-light">
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-sm p-4 text-center" style="max-width: 420px;">
+        <h4 class="mb-3">📧 Check Your Email</h4>
+        <p class="text-muted">
+            We’ve sent a verification link to your email address.
+            Please click the link to activate your account.
+        </p>
+        <a href="/" class="btn btn-primary mt-3">Back to Home</a>
+    </div>
+</div>
+
+</body>
+{% endblock %}

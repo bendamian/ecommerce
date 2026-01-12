@@ -1,2 +1,18 @@
-<h1> Email verification failed </h1>
-<p> Hi, your email verification failed. Please try again or contact support. </p>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<body class="bg-light">
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-sm p-4 text-center border-danger" style="max-width: 420px;">
+        <h4 class="text-danger mb-3">❌ Invalid Link</h4>
+        <p class="text-muted">
+            This verification link is invalid or has expired.
+        </p>
+        <a href="{% url 'account_app:register' %}" class="btn btn-outline-danger mt-3">Register Again</a>
+    </div>
+</div>
+
+</body>
+{% endblock %}
