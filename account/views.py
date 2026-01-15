@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, UserLoginForm
+
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from .token import user_token_generator
@@ -8,6 +9,8 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.models import User
+from django.contrib.auth.models import auth
+from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 
 
@@ -101,3 +104,38 @@ def email_verification_failed(request):
     return render(request, 'account/registration/email-verification-faild.html')
 
   
+def my_login(request):
+    """
+    Handle user login:
+    - GET: Display login form
+    - POST: Validate form, log in user
+    - Provides Bootstrap styling for form errors dynamically
+    """
+
+    if request.method == "POST":
+        form = UserLoginForm(request, data=request.POST)
+
+        if form.is_valid():
+            # Get authenticated user from form
+            user = form.get_user()
+            login(request, user)  # Log the user in
+
+            messages.success(request, f"Welcome, {user.username}!")
+            return redirect('account_app:dashboard')  # Redirect to dashboard after login
+        else:
+            # Show general error if login fails
+            messages.error(request, "Invalid username or password.")
+    else:
+        form = UserLoginForm()  # Empty form for GET request
+
+    # Render the login page with form
+    return render(request, 'account/my-login.html', {'form': form})
+
+
+def my_logout(request):
+   pass
+
+
+
+def dashboard(request):
+    return render(request, 'account/dashbord.html')

@@ -1,7 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.forms.widgets import PasswordInput, TextInput
 
+
+# User Registration Form
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(
         required=True,
@@ -36,3 +40,54 @@ class UserRegisterForm(UserCreationForm):
             raise forms.ValidationError("This email address is already in use.")
 
         return email
+
+
+
+# User Login Form
+class UserLoginForm(AuthenticationForm):
+    """
+    Custom login form extending Django's built-in AuthenticationForm.
+    - Adds Bootstrap styling, placeholders, autofocus
+    - Adds dynamic 'is-invalid' class for fields with errors
+    - Custom error messages for better UX
+    """
+
+    # Username field with Bootstrap styling and autofocus
+    username = forms.CharField(
+        widget=TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Username',
+                'autofocus': True
+            }
+        )
+    )
+
+    # Password field with Bootstrap styling
+    password = forms.CharField(
+        widget=PasswordInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Password'
+            }
+        )
+    )
+
+    # Custom error messages
+    error_messages = {
+        'invalid_login': "Please enter a correct username and password.",
+        'inactive': "This account is inactive.",
+    }
+
+    def __init__(self, *args, **kwargs):
+        """
+        Customize form initialization.
+        Adds 'is-invalid' Bootstrap class dynamically to fields with errors.
+        """
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            # Append 'is-invalid' class if this field has errors
+            if self.errors.get(field_name):
+                existing_classes = field.widget.attrs.get('class', '')
+                field.widget.attrs['class'] = f'{existing_classes} is-invalid'.strip()

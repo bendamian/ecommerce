@@ -9,5 +9,8 @@ urlpatterns = [
  path('email-verify-failed/', views.email_verification_failed, name='email-verify-failed'),
  path('email-verify-success/', views.email_verification_success, name='email-verify-success'),
  path('email-verify-sent/', views.email_verification_sent, name='email-verify-sent'),
+ path('my-login/', views.my_login, name='my-login'),
+ path('dashboard/', views.dashboard, name='dashboard'),
+ path('my-logout/', views.my_logout, name='my-logout'),
     
 ]
