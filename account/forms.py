@@ -91,3 +91,47 @@ class UserLoginForm(AuthenticationForm):
             if self.errors.get(field_name):
                 existing_classes = field.widget.attrs.get('class', '')
                 field.widget.attrs['class'] = f'{existing_classes} is-invalid'.strip()
+
+# Profile Update Form
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    """
+    Form for updating user profile details.
+    Enforces username and email to be non-empty.
+    """
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Username',
+                'required': True,   # HTML-level enforcement
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Email address',
+                'required': True,   # HTML-level enforcement
+            }),
+        }
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username', '').strip()
+
+        if not username:
+            raise forms.ValidationError("Username cannot be empty.")
+
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip()
+
+        if not email:
+            raise forms.ValidationError("Email address cannot be empty.")
+
+        return email
+
+    

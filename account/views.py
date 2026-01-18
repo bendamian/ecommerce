@@ -1,6 +1,7 @@
+from urllib import request
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
-from .forms import UserRegisterForm, UserLoginForm
+from .forms import UserRegisterForm, UserLoginForm, ProfileUpdateForm
 
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
@@ -11,6 +12,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.models import User
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
 
@@ -133,9 +136,55 @@ def my_login(request):
 
 
 def my_logout(request):
-   pass
+   auth.logout(request)
+   return redirect('store_app:store')
 
 
 
+@login_required(login_url='account_app:my-login')
 def dashboard(request):
     return render(request, 'account/dashbord.html')
+
+
+@login_required(login_url='account_app:my-login')
+def profile_management(request):
+    """
+    Allow logged-in users to update their profile details.
+    """
+
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Your profile has been updated successfully."
+            )
+            return redirect('account_app:dashboard')
+
+    else:
+        # Load form with current user data
+        form = ProfileUpdateForm(instance=request.user)
+
+    context = {
+        'form': form
+    }
+
+    return render(
+        request,
+        'account/profile-management.html',
+        context
+    )
+
+@login_required(login_url='account_app:my-login')
+def delete_account(request):
+    user = User.objects.get(id=request.user.id)
+
+    if request.method == "POST":
+        logout(request)  # Log out the user before deleting the account
+        user.delete()
+        messages.success(request, "Your account has been deleted successfully.")
+        return redirect('store_app:store')
+
+    return render(request, 'account/delete-account.html')

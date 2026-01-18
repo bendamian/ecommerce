@@ -10,7 +10,13 @@ urlpatterns = [
  path('email-verify-success/', views.email_verification_success, name='email-verify-success'),
  path('email-verify-sent/', views.email_verification_sent, name='email-verify-sent'),
  path('my-login/', views.my_login, name='my-login'),
- path('dashboard/', views.dashboard, name='dashboard'),
  path('my-logout/', views.my_logout, name='my-logout'),
+ #profile management
+ path('profile-management/', views.profile_management, name='profile-management'),
+ path('delete-account/', views.delete_account, name='delete-account'),
+
+ path('dashboard/', views.dashboard, name='dashboard'),
+
+ 
     
 ]

@@ -1,8 +1,72 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
+<div class="container mt-5">
 
-<h1> Well come to your dashboard,</h1>
+    <!-- Welcome Section -->
+    <div class="mb-4">
+        <h2 class="fw-bold">
+            Welcome, {{ request.user.username }} 👋
+        </h2>
+        <p class="text-muted">
+            This is your personal dashboard.
+        </p>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="row g-4">
+
+        <!-- Profile Card -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-circle fs-1 text-primary"></i>
+                    <h5 class="card-title mt-3">My Profile</h5>
+                    <p class="card-text text-muted">
+                        View and update your profile details.
+                    </p>
+                    <a href="{% url 'account_app:profile-management' %}" class="btn btn-sm btn-primary">View Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Card -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-gear-fill fs-1 text-success"></i>
+                    <h5 class="card-title mt-3">Settings</h5>
+                    <p class="card-text text-muted">
+                        Manage account settings and security.
+                    </p>
+                    <a href="#" class="btn btn-sm btn-success">Settings</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Card -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-clock-history fs-1 text-warning"></i>
+                    <h5 class="card-title mt-3">Activity</h5>
+                    <p class="card-text text-muted">
+                        Check your recent activity.
+                    </p>
+                    <a href="#" class="btn btn-sm btn-warning text-white">View Activity</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Logout -->
+    <div class="text-center mt-5">
+        <a href="{% url 'account_app:my-logout' %}" class="btn btn-outline-danger">
+            Logout
+        </a>
+    </div>
+
+</div>
 {% endblock content %}

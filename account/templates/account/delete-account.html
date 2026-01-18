@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4 text-center text-danger">Delete Account</h3>
+                    <form method="post" action="{% url 'account_app:delete-account' %}">
+                        {% csrf_token %}
+                        <p class="text-muted">
+                            Are you sure you want to delete your account? This action cannot be undone.
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'account_app:dashboard' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">Delete Account</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
