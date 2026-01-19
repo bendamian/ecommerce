@@ -1,7 +1,7 @@
 from urllib import request
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
-from .forms import UserRegisterForm, UserLoginForm, ProfileUpdateForm
+from .forms import UserRegisterForm,UserLoginForm, ProfileUpdateForm
 
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
@@ -151,9 +151,9 @@ def profile_management(request):
     """
     Allow logged-in users to update their profile details.
     """
-
+   
     if request.method == "POST":
-        form = ProfileUpdateForm(request.POST, instance=request.user)
+        form = ProfileUpdateForm(request.POST or None, instance=request.user, user=request.user)
 
         if form.is_valid():
             form.save()

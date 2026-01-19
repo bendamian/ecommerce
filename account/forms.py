@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms.widgets import PasswordInput, TextInput
+from django.contrib.auth import get_user_model
 
 
 # User Registration Form
@@ -92,13 +93,16 @@ class UserLoginForm(AuthenticationForm):
                 existing_classes = field.widget.attrs.get('class', '')
                 field.widget.attrs['class'] = f'{existing_classes} is-invalid'.strip()
 
+
 # Profile Update Form
+
+User = get_user_model()
 
 
 class ProfileUpdateForm(forms.ModelForm):
     """
     Form for updating user profile details.
-    Enforces username and email to be non-empty.
+    Enforces username and email to be non-empty and email to be unique.
     """
 
     class Meta:
@@ -109,14 +113,18 @@ class ProfileUpdateForm(forms.ModelForm):
             'username': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Username',
-                'required': True,   # HTML-level enforcement
+                'required': True,
             }),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Email address',
-                'required': True,   # HTML-level enforcement
+                'required': True,
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # current logged-in user
+        super().__init__(*args, **kwargs)
 
     def clean_username(self):
         username = self.cleaned_data.get('username', '').strip()
@@ -132,6 +140,17 @@ class ProfileUpdateForm(forms.ModelForm):
         if not email:
             raise forms.ValidationError("Email address cannot be empty.")
 
+        # Check for duplicate email (excluding current user)
+        qs = User.objects.filter(email__iexact=email)
+
+        if self.user:
+            qs = qs.exclude(pk=self.user.pk)
+
+        if qs.exists():
+            raise forms.ValidationError(
+                "This email address is already in use.")
+
         return email
 
-    
+
+
