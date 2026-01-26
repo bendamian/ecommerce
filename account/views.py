@@ -14,6 +14,7 @@ from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+
 # Create your views here.
 
 
@@ -136,10 +137,21 @@ def my_login(request):
 
 
 def my_logout(request):
-   auth.logout(request)
-   return redirect('store_app:store')
+    # Preserve cart if it exists
+    cart = request.session.get("cart")
 
+    # Log out the user properly
+    logout(request)
 
+    # Flush session (extra safety)
+    request.session.flush()
+
+    # Restore cart
+    if cart is not None:
+        request.session["cart"] = cart
+
+    messages.success(request, "You have been logged out successfully.")
+    return redirect("store_app:store")
 
 @login_required(login_url='account_app:my-login')
 def dashboard(request):

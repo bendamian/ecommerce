@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'account',
     # 3rd party
     'crispy_forms',
+    # widget tweaks for form rendering
+    "widget_tweaks",
     
 
 ]
