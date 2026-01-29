@@ -29,6 +29,10 @@ urlpatterns = [
     # Include password reset URLs from urls_password.py
     path('', include('account.urls_password')),
 
+    # MANAGE sHIPPING ADDRESSES
+     #path('activity/', views.activity, name='activity'),
+     path('manage-shipping/', views.manage_shipping_address, name='manage-shipping'),
+
    
 
 ]

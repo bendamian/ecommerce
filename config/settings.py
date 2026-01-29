@@ -34,8 +34,9 @@ INSTALLED_APPS = [
     'store',
     'cart', 
     'mathfilters',
-    'account',
     'payment',
+    'account',
+    
     # 3rd party
     'crispy_forms',
     # widget tweaks for form rendering

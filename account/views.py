@@ -1,7 +1,10 @@
 from urllib import request
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
+
 from .forms import UserRegisterForm,UserLoginForm, ProfileUpdateForm
+from payment.forms import ShippingAddressForm
+from payment.models import ShippingAddress
+from django.views.decorators.http import require_http_methods
 
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
@@ -13,6 +16,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+
 
 
 # Create your views here.
@@ -200,3 +204,28 @@ def delete_account(request):
         return redirect('store_app:store')
 
     return render(request, 'account/delete-account.html')
+
+
+@login_required(login_url="account_app:my-login")
+@require_http_methods(["GET", "POST"])
+def manage_shipping_address(request):
+    try:
+        shipping_address = ShippingAddress.objects.get(user=request.user.id )
+
+
+    except ShippingAddress.DoesNotExist:
+        shipping_address = None
+    
+    form = ShippingAddressForm(instance=shipping_address)
+
+    if request.method == "POST":
+        form = ShippingAddressForm(request.POST, instance=shipping_address)
+        if form.is_valid():
+            shipping_user = form.save(commit=False)
+            shipping_user.user = request.user
+            shipping_user.save()
+            return redirect('account_app:dashboard')
+    context = {
+        "form": form
+    }
+    return render(request, 'account/manage-shipping.html', context=context)
