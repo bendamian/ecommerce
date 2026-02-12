@@ -91,7 +91,7 @@ def complete_order(request):
                     order_id=order_id,
                     product=item["product"],
                     quantity=item["quantity"],
-                    price=item["price"],
+                    price_at_purchase=item["price"],
                 )
 
         order_success = True
