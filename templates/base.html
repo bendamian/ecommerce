@@ -21,6 +21,7 @@
 
   {# Page-specific head content #}
   {% block head %}{% endblock %}
+  {% block extra_css %}{% endblock %}
 </head>
 
 <body>
@@ -51,12 +52,7 @@
   {#            SCRIPTS            #}
   {# ============================= #}
 
-  <!-- jQuery (required for AJAX calls) -->
-  <script
-    src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-    crossorigin="anonymous">
-  </script>
+  
 
   <!-- Bootstrap JS bundle (includes Popper) -->
   <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
@@ -65,8 +61,13 @@
   <script src="{% static 'js/alerts.js' %}"></script>
 
   {# Page-specific JavaScript #}
+  <!-- jQuery first -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        crossorigin="anonymous"></script>
   {% block extra_js %}{% endblock %}
   {% block scripts %}{% endblock %}
+
 
 </body>
 </html>
