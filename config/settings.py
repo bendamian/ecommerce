@@ -150,3 +150,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+
+# Allow PayPal Popup to be used in development
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'

@@ -30,13 +30,13 @@
 
         <hr class="my-4">
 
-        <form id="checkout-form" method="post" novalidate>
+        <form id="checkout-form" method="POST" novalidate>
           {% csrf_token %}
 
           <div class="mb-3">
             <label for="name" class="form-label">Full name <span class="text-danger">*</span></label>
             <input
-              class="form-control"
+              class="form-control validate"
               id="name"
               name="full_name"
               type="text"
@@ -50,7 +50,7 @@
           <div class="mb-3">
             <label for="email" class="form-label">Email address <span class="text-danger">*</span></label>
             <input
-              class="form-control"
+              class="form-control validate"
               id="email"
               name="email"
               type="email"
@@ -64,7 +64,7 @@
           <div class="mb-3">
             <label for="address1" class="form-label">Address line 1 <span class="text-danger">*</span></label>
             <input
-              class="form-control"
+              class="form-control validate"
               id="address1"
               name="address_line1"
               type="text"
@@ -92,7 +92,7 @@
             <div class="col-md-6">
               <label for="city" class="form-label">City <span class="text-danger">*</span></label>
               <input
-                class="form-control"
+                class="form-control validate"
                 id="city"
                 name="city"
                 type="text"
@@ -104,7 +104,7 @@
             </div>
 
             <div class="col-md-6">
-              <label for="state" class="form-label">County/State (optional)</label>
+              <label for="county" class="form-label">County/State (optional)</label>
               <input
                 class="form-control"
                 id="county"
@@ -117,8 +117,9 @@
             </div>
 
             <div class="col-md-6">
-              <label for="zipcode" class="form-label">Postcode/Zip (optional)</label>
-              <input
+              <label for="postal_code" class="form-label">Postcode/Zip (optional)</label>
+
+             <input
                 class="form-control"
                 id="postal_code"
                 name="postal_code"
@@ -129,7 +130,7 @@
               >
             </div>
           </div>
-
+         <!--
           <button
             id="complete-order"
             type="submit"
@@ -137,12 +138,22 @@
           >
             Complete order
           </button>
+                -->
+          <br> 
+          <!-- PayPal button  -->
+          <div id="paypal-button-container"></div>
+
+   
+
+          
+
 
           <p class="text-muted small mt-3 mb-0">
             By placing your order, you agree to our terms and conditions.
           </p>
 
         </form>
+              
 
       </div>
     </div>
@@ -152,58 +163,97 @@
 {% endblock %}
 
 {% block scripts %}
+
+<!-- Load PayPal SDK (best outside the form) -->
+<script src="https://www.paypal.com/sdk/js?client-id=AcTAGhkhnrSkxwLU1_EbpR2Yvrrn_buD9THhOmWJwO1FIkrdfiy5frsrmY4mk3uOpg48X2rGktYxoQHQ&currency=USD&intent=capture&enable-funding=venmo"></script>
+
 <script>
-  // Complete order (AJAX)
+  // Total price from Django (string "10.00")
+  const total_price = "{{ cart.get_total_price|floatformat:2 }}".replace(",", ".");
 
-  $(function () {
-    
-    $("#checkout-form").on("submit", function (e) {
-      e.preventDefault();
-       const fullName = ($('input[name="full_name"]').val() || $('#name').val() || '').trim();
-                         if (!fullName) { alert("Enter your full name"); return; }        
-      const email = ($("#email").val() || "").trim();
-      const address1 = ($("#address1").val() || "").trim();
-      const address2 = ($("#address2").val() || "").trim();
-      const city = ($("#city").val() || "").trim();
-      const county = ($("#county").val() || "").trim();
-      const postcode = ($("#postal_code").val() || "").trim();
+  // Stop normal form submission (PayPal will handle checkout)
+  document.getElementById("checkout-form").addEventListener("submit", function(e){
+    e.preventDefault();
+  });
 
-      // Frontend validation (prevents NULL full_name)
-      if (!fullName) {
-        alert("Please enter your full name.");
-        return;
+  const paypalButtonsComponent = paypal.Buttons({
+    style: {
+      color: "silver",
+      shape: "pill",
+      layout: "vertical"
+    },
+
+    onInit: function (data, actions) {
+      actions.disable();
+
+      const form = document.getElementById("checkout-form");
+      const requiredInputs = form.querySelectorAll("[required]");
+
+      const validateForm = () => {
+        let valid = true;
+
+        requiredInputs.forEach(input => {
+          if (!input.value.trim() || !input.checkValidity()) {
+            input.classList.add("is-invalid");
+            valid = false;
+          } else {
+            input.classList.remove("is-invalid");
+          }
+        });
+
+        valid ? actions.enable() : actions.disable();
+      };
+
+      // Run once on load (helps if browser autofills)
+      validateForm();
+
+      // Run again shortly after in case autofill happens late
+      setTimeout(validateForm, 200);
+
+      requiredInputs.forEach(input => {
+        input.addEventListener("input", validateForm);
+        input.addEventListener("change", validateForm);
+        input.addEventListener("blur", validateForm);
+      });
+    },
+
+    createOrder: (data, actions) => {
+      if (!total_price || isNaN(Number(total_price))) {
+        console.error("Invalid total price:", total_price);
+        throw new Error("Invalid total price");
       }
 
-      $.ajax({
-        type: "POST",
-        url: '{% url "payment_app:complete-order" %}',
-        data: {
-          full_name: fullName,
-          email: email,
-          address_line1: address1,
-          address_line2: address2,
-          city: city,
-          county: county,
-          postal_code: postcode,
-          csrfmiddlewaretoken: "{{ csrf_token }}",
-          action: "post"
-        },
-        success: function (json) {
-          window.location.replace("{% url 'payment_app:payment-success' %}");
-        },
-        error: function (xhr) {
-          console.log("Order failed:", xhr.status, xhr.responseText);
-
-          // Optional: show backend error message if you return JSON errors
-          try {
-            const data = JSON.parse(xhr.responseText);
-            if (data.error) alert(data.error);
-          } catch (e) {}
-
-          window.location.replace("{% url 'payment_app:payment-failed' %}");
-        }
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            currency_code: "USD",
+            value: total_price
+          }
+        }]
       });
-    });
+    },
+
+    onApprove: (data, actions) => {
+      return actions.order.capture().then(function(details) {
+        console.log("Transaction completed", details);
+
+        
+      });
+    },
+
+    onError: (err) => {
+      console.error("PayPal checkout error:", err);
+     
+    }
   });
+
+  paypalButtonsComponent.render("#paypal-button-container");
 </script>
+
+
+
+
+
+
+
 {% endblock scripts %}
