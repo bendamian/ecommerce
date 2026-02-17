@@ -18,6 +18,7 @@ A production-oriented e-commerce application built with **Django 5**, featuring 
 
 1. **Clone the repository:**
    ```bash
-   git clone[git@github.com:bendamian/ecommerce.git]
+   git clone https://github.com/bendamian/ecommerce.git
    cd your-repo
+
 
