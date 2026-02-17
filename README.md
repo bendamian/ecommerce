@@ -52,7 +52,7 @@ The core logic relies on two primary models:
 1. Clone & Environment
 Bash
 
-git clone https://github.com/yourusername/your-repo.git
+git clone git@github.com:bendamian/ecommerce.git
 cd your-repo
 python -m venv venv
 # Windows: venv\Scripts\activate | Mac/Linux: source venv/bin/activate
@@ -70,3 +70,4 @@ Bash
 
 python manage.py migrate
 python manage.py runserver
+
