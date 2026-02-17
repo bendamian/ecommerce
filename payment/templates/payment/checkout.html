@@ -3,6 +3,10 @@
 
 {% block content %}
 
+<!-- ======================================================
+     CHECKOUT PAGE STYLING
+     Keeps layout centered and visually clean
+====================================================== -->
 <style>
   .checkout-page {
     background: #f1f3f5;
@@ -15,26 +19,38 @@
   }
 </style>
 
+<!-- ======================================================
+     CHECKOUT FORM CONTAINER
+====================================================== -->
 <div class="checkout-page">
   <div class="container">
     <div class="card checkout-card shadow-sm border-0 mx-auto">
       <div class="card-body p-4 p-md-5">
 
+        <!-- Page Heading -->
         <div class="mb-4">
           <h3 class="fw-bold mb-1">
             <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
             <span class="ms-2">Complete your order</span>
           </h3>
-          <p class="text-muted mb-0">Please enter the relevant information below.</p>
+          <p class="text-muted mb-0">
+            Please enter your shipping and contact details below.
+          </p>
         </div>
 
         <hr class="my-4">
 
+        <!-- ======================================================
+             CHECKOUT FORM (Validated before PayPal enabled)
+        ====================================================== -->
         <form id="checkout-form" method="POST" novalidate>
           {% csrf_token %}
 
+          <!-- Full Name -->
           <div class="mb-3">
-            <label for="name" class="form-label">Full name <span class="text-danger">*</span></label>
+            <label for="name" class="form-label">
+              Full name <span class="text-danger">*</span>
+            </label>
             <input
               class="form-control validate"
               id="name"
@@ -47,8 +63,11 @@
             >
           </div>
 
+          <!-- Email -->
           <div class="mb-3">
-            <label for="email" class="form-label">Email address <span class="text-danger">*</span></label>
+            <label for="email" class="form-label">
+              Email address <span class="text-danger">*</span>
+            </label>
             <input
               class="form-control validate"
               id="email"
@@ -61,8 +80,11 @@
             >
           </div>
 
+          <!-- Address Line 1 -->
           <div class="mb-3">
-            <label for="address1" class="form-label">Address line 1 <span class="text-danger">*</span></label>
+            <label for="address1" class="form-label">
+              Address line 1 <span class="text-danger">*</span>
+            </label>
             <input
               class="form-control validate"
               id="address1"
@@ -75,8 +97,11 @@
             >
           </div>
 
+          <!-- Address Line 2 (Optional) -->
           <div class="mb-3">
-            <label for="address2" class="form-label">Address line 2 (optional)</label>
+            <label for="address2" class="form-label">
+              Address line 2 (optional)
+            </label>
             <input
               class="form-control"
               id="address2"
@@ -88,15 +113,17 @@
             >
           </div>
 
+          <!-- City / County / Postcode -->
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="city" class="form-label">City <span class="text-danger">*</span></label>
+              <label for="city" class="form-label">
+                City <span class="text-danger">*</span>
+              </label>
               <input
                 class="form-control validate"
                 id="city"
                 name="city"
                 type="text"
-                placeholder="e.g. London"
                 autocomplete="address-level2"
                 value="{{ shipping.city|default:'' }}"
                 required
@@ -104,56 +131,43 @@
             </div>
 
             <div class="col-md-6">
-              <label for="county" class="form-label">County/State (optional)</label>
+              <label for="county" class="form-label">
+                County/State (optional)
+              </label>
               <input
                 class="form-control"
                 id="county"
                 name="county"
                 type="text"
-                placeholder="e.g. Surrey"
                 autocomplete="address-level1"
                 value="{{ shipping.county|default:'' }}"
               >
             </div>
 
             <div class="col-md-6">
-              <label for="postal_code" class="form-label">Postcode/Zip (optional)</label>
-
-             <input
+              <label for="postal_code" class="form-label">
+                Postcode/Zip
+              </label>
+              <input
                 class="form-control"
                 id="postal_code"
                 name="postal_code"
                 type="text"
-                placeholder="e.g. SM2 5GP"
                 autocomplete="postal-code"
                 value="{{ shipping.postal_code|default:'' }}"
               >
             </div>
           </div>
-         <!--
-          <button
-            id="complete-order"
-            type="submit"
-            class="btn btn-primary w-100 mt-4 py-2 fw-semibold"
-          >
-            Complete order
-          </button>
-                -->
-          <br> 
-          <!-- PayPal button  -->
+
+          <!-- PayPal Button Container -->
+          <br>
           <div id="paypal-button-container"></div>
-
-   
-
-          
-
 
           <p class="text-muted small mt-3 mb-0">
             By placing your order, you agree to our terms and conditions.
           </p>
 
         </form>
-              
 
       </div>
     </div>
@@ -164,25 +178,38 @@
 
 {% block scripts %}
 
-<!-- Load PayPal SDK (best outside the form) -->
-<script src="https://www.paypal.com/sdk/js?client-id=AcTAGhkhnrSkxwLU1_EbpR2Yvrrn_buD9THhOmWJwO1FIkrdfiy5frsrmY4mk3uOpg48X2rGktYxoQHQ&currency=USD&intent=capture&enable-funding=venmo"></script>
+<!-- ======================================================
+     LOAD PAYPAL SDK
+     Client ID should ideally be injected from settings
+====================================================== -->
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD&intent=capture"></script>
 
 <script>
-  // Total price from Django (string "10.00")
-  const total_price = "{{ cart.get_total_price|floatformat:2 }}".replace(",", ".");
-
-  // Stop normal form submission (PayPal will handle checkout)
+  // ======================================================
+  // PREVENT DEFAULT FORM SUBMISSION
+  // PayPal button controls the checkout flow
+  // ======================================================
   document.getElementById("checkout-form").addEventListener("submit", function(e){
     e.preventDefault();
   });
 
+  // Total cart price passed from Django
+  const total_price = "{{ cart.get_total_price|floatformat:2 }}".replace(",", ".");
+
+  // ======================================================
+  // PAYPAL BUTTON CONFIGURATION
+  // ======================================================
   const paypalButtonsComponent = paypal.Buttons({
+
     style: {
       color: "silver",
       shape: "pill",
       layout: "vertical"
     },
 
+    // --------------------------------------------------
+    // Enable PayPal button only when required fields valid
+    // --------------------------------------------------
     onInit: function (data, actions) {
       actions.disable();
 
@@ -204,10 +231,7 @@
         valid ? actions.enable() : actions.disable();
       };
 
-      // Run once on load (helps if browser autofills)
       validateForm();
-
-      // Run again shortly after in case autofill happens late
       setTimeout(validateForm, 200);
 
       requiredInputs.forEach(input => {
@@ -217,12 +241,10 @@
       });
     },
 
+    // --------------------------------------------------
+    // Create PayPal Order
+    // --------------------------------------------------
     createOrder: (data, actions) => {
-      if (!total_price || isNaN(Number(total_price))) {
-        console.error("Invalid total price:", total_price);
-        throw new Error("Invalid total price");
-      }
-
       return actions.order.create({
         purchase_units: [{
           amount: {
@@ -233,80 +255,55 @@
       });
     },
 
-onApprove: (data, actions) => {
-  return actions.order.capture().then(function (details) {
-    console.log("Transaction completed", details);
+    // --------------------------------------------------
+    // On Payment Approval
+    // Capture payment, then send order to Django
+    // --------------------------------------------------
+    onApprove: (data, actions) => {
+      return actions.order.capture().then(function (details) {
 
-    // 1) Collect form fields (same as your checkout-form code)
-    const fullName = ($('input[name="full_name"]').val() || $('#name').val() || '').trim();
-    const email = ($("#email").val() || "").trim();
-    const address1 = ($("#address1").val() || "").trim();
-    const address2 = ($("#address2").val() || "").trim();
-    const city = ($("#city").val() || "").trim();
-    const county = ($("#county").val() || "").trim();
-    const postcode = ($("#postal_code").val() || "").trim();
+        const paypalOrderId = data.orderID;
+        const captureId =
+          details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || null;
 
-    if (!fullName) {
-      alert("Please enter your full name.");
-      return;
-    }
+        // Send order data to Django backend
+        return $.ajax({
+          type: "POST",
+          url: '{% url "payment_app:complete-order" %}',
+          data: {
+            action: "post",
+            full_name: $("#name").val(),
+            email: $("#email").val(),
+            address_line1: $("#address1").val(),
+            address_line2: $("#address2").val(),
+            city: $("#city").val(),
+            county: $("#county").val(),
+            postal_code: $("#postal_code").val(),
+            paypal_order_id: paypalOrderId,
+            paypal_capture_id: captureId,
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function () {
+            window.location.replace("{% url 'payment_app:payment-success' %}");
+          },
+          error: function () {
+            window.location.replace("{% url 'payment_app:payment-failed' %}");
+          }
+        });
+      });
+    },
 
-    // 2) Pull PayPal IDs from capture response
-    const paypalOrderId = data.orderID; // PayPal order id
-    const captureId =
-      details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || null;
-
-    // 3) Call your Django endpoint to create the Order + OrderItems
-    return $.ajax({
-      type: "POST",
-      url: '{% url "payment_app:complete-order" %}',
-      data: {
-        action: "post",
-        full_name: fullName,
-        email: email,
-        address_line1: address1,
-        address_line2: address2,
-        city: city,
-        county: county,
-        postal_code: postcode,
-
-        // PayPal references (optional but recommended)
-        paypal_order_id: paypalOrderId,
-        paypal_capture_id: captureId,
-
-        csrfmiddlewaretoken: "{{ csrf_token }}",
-      },
-      success: function (json) {
-        // Redirect only after DB save succeeded
-        window.location.replace("{% url 'payment_app:payment-success' %}");
-      },
-      error: function (xhr) {
-        console.log("Save order failed:", xhr.status, xhr.responseText);
-        window.location.replace("{% url 'payment_app:payment-failed' %}");
-      },
-    });
-  });
-},
-
-
+    // --------------------------------------------------
+    // Handle PayPal errors
+    // --------------------------------------------------
     onError: (err) => {
       console.error("PayPal checkout error:", err);
-     
     }
+
   });
 
   paypalButtonsComponent.render("#paypal-button-container");
 
-
-
-
-
 </script>
-
-
-
-
-
-
 
 {% endblock scripts %}
