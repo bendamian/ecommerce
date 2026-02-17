@@ -233,13 +233,61 @@
       });
     },
 
-    onApprove: (data, actions) => {
-      return actions.order.capture().then(function(details) {
-        console.log("Transaction completed", details);
+onApprove: (data, actions) => {
+  return actions.order.capture().then(function (details) {
+    console.log("Transaction completed", details);
 
-        
-      });
-    },
+    // 1) Collect form fields (same as your checkout-form code)
+    const fullName = ($('input[name="full_name"]').val() || $('#name').val() || '').trim();
+    const email = ($("#email").val() || "").trim();
+    const address1 = ($("#address1").val() || "").trim();
+    const address2 = ($("#address2").val() || "").trim();
+    const city = ($("#city").val() || "").trim();
+    const county = ($("#county").val() || "").trim();
+    const postcode = ($("#postal_code").val() || "").trim();
+
+    if (!fullName) {
+      alert("Please enter your full name.");
+      return;
+    }
+
+    // 2) Pull PayPal IDs from capture response
+    const paypalOrderId = data.orderID; // PayPal order id
+    const captureId =
+      details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || null;
+
+    // 3) Call your Django endpoint to create the Order + OrderItems
+    return $.ajax({
+      type: "POST",
+      url: '{% url "payment_app:complete-order" %}',
+      data: {
+        action: "post",
+        full_name: fullName,
+        email: email,
+        address_line1: address1,
+        address_line2: address2,
+        city: city,
+        county: county,
+        postal_code: postcode,
+
+        // PayPal references (optional but recommended)
+        paypal_order_id: paypalOrderId,
+        paypal_capture_id: captureId,
+
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+      },
+      success: function (json) {
+        // Redirect only after DB save succeeded
+        window.location.replace("{% url 'payment_app:payment-success' %}");
+      },
+      error: function (xhr) {
+        console.log("Save order failed:", xhr.status, xhr.responseText);
+        window.location.replace("{% url 'payment_app:payment-failed' %}");
+      },
+    });
+  });
+},
+
 
     onError: (err) => {
       console.error("PayPal checkout error:", err);
@@ -248,6 +296,11 @@
   });
 
   paypalButtonsComponent.render("#paypal-button-container");
+
+
+
+
+
 </script>
 
 
