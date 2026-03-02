@@ -33,6 +33,9 @@ urlpatterns = [
      #path('activity/', views.activity, name='activity'),
      path('manage-shipping/', views.manage_shipping_address, name='manage-shipping'),
 
+     #track orders
+     path('track-orders/', views.track_orders, name='track-orders'),
+
    
 
 ]

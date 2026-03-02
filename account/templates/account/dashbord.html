@@ -53,21 +53,25 @@
       </div>
     </div>
 
-    <!-- Activity -->
-    <div class="col-12 col-md-6 col-lg-3">
-      <div class="card shadow-sm h-100 border-0">
-        <div class="card-body text-center">
-          <i class="bi bi-clock-history fs-1 text-warning"></i>
-          <h5 class="card-title mt-3 mb-2">Activity</h5>
-          <p class="card-text text-muted small mb-3">
-            See your recent account activity.
-          </p>
-          <a href="#" class="btn btn-sm btn-warning text-white disabled" aria-disabled="true">
-            Coming soon
-          </a>
-        </div>
-      </div>
+    <!-- Track Orders -->
+<div class="col-12 col-md-6 col-lg-3">
+  <div class="card shadow-sm h-100 border-0 hover-card">
+    <div class="card-body text-center">
+      <i class="bi bi-truck fs-1 text-primary"></i>
+
+      <h5 class="card-title mt-3 mb-2">Track Orders</h5>
+
+      <p class="card-text text-muted small mb-3">
+        View your order history and track delivery status.
+      </p>
+
+      <a href="{% url 'account_app:track-orders' %}" 
+         class="btn btn-sm btn-primary">
+        View Orders
+      </a>
     </div>
+  </div>
+</div>
 
     <!-- Manage Shipping -->
     <div class="col-12 col-md-6 col-lg-3">

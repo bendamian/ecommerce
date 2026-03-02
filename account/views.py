@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
+from payment.models import Order, OrderItem
 
 
 # Create your views here.
@@ -229,3 +229,19 @@ def manage_shipping_address(request):
         "form": form
     }
     return render(request, 'account/manage-shipping.html', context=context)
+
+
+@login_required(login_url='account_app:my-login')
+def track_orders(request):
+    # Get all orders for the logged-in user
+    orders = (
+        Order.objects
+        .filter(user=request.user)
+        .order_by('-created_at')
+    )
+
+    return render(
+        request,
+        'account/track-orders.html',
+        {"orders": orders}
+    )
